@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load gross from prices_i18n %}
+{% load gross tax from prices_i18n %}
 {% load discount_amount_for from prices %}
 {% load product_first_image from product_images %}
 {% load discount_as_negative from voucher %}
@@ -51,8 +51,8 @@
       <div class="row">
         <div class="col-md-6 col-9">
           <a class="link--clean" href="{{ item_line.product.get_absolute_url }}">
-            <img src="{% product_first_image item_line.product size="60x60" method="crop" %}" 
-            srcset="{% product_first_image item_line.product size="60x60" method="crop" %} 1x, {% product_first_image item_line.product size="120x120" method="crop" %} 2x" 
+            <img src="{% product_first_image item_line.product size="60x60" method="crop" %}"
+            srcset="{% product_first_image item_line.product size="60x60" method="crop" %} 1x, {% product_first_image item_line.product size="120x120" method="crop" %} 2x"
             class="float-left">
             <p>{{ item_line.product }}<br>
               <small>{{ item_line.product_name }}</small></p>
@@ -61,7 +61,7 @@
         <div class="col-md-6 col-3">
           <div class="row">
             <div class="col-md-6 col-12">
-              <p class="float-right">x {{ item_line.quantity }}</p>
+              <p class="float-right">{{ item_line.quantity }} x</p>
             </div>
             <div class="col-md-6 col-12">
               <p class="float-right">{% gross item_line.get_total html=True %}</p>
@@ -89,7 +89,7 @@
           {% endif %}
         </div>
         <div class="col-4">
-          <p class="float-right">{% gross item.shipping_price html=True %}</p>
+          <p class="float-right">{% gross item.shipping_price_with_vat html=True %}</p>
         </div>
       </div>
     </div>
@@ -106,11 +106,22 @@
       </div>
     </div>
   {% endif %}
+  <div class="table__row">
+    <div class="row">
+      <div class="col-8 order-details__table-footer">
+        <p>{% trans "Tax incl." context "Order detail tax" %}</p>
+      </div>
+      <div class="col-4">
+        <p class="float-right">{% tax order.total html=True %}</p>
+      </div>
+    </div>
+  </div>
+
   <div class="order-details__total">
     <div class="row">
       <div class="col-8 order-details__table-footer">
         <div class="total">
-          <h3>{% trans "Total" context "Order details total text" %}</h3>
+          <p><strong>{% trans "Total" context "Order details total text" %}</strong></hp>
         </div>
       </div>
       <div class="col-4">

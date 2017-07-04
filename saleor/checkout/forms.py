@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django import forms
 from django.utils.safestring import mark_safe
 from django.utils.translation import pgettext_lazy
@@ -56,7 +58,7 @@ class ShippingCountryChoiceField(forms.ModelChoiceField):
     widget = forms.RadioSelect()
 
     def label_from_instance(self, obj):
-        price_html = format_price(obj.price.gross, obj.price.currency)
+        price_html = format_price(obj.price.net * Decimal(1.19), obj.price.currency)
         label = mark_safe('%s %s' % (obj.shipping_method, price_html))
         return label
 

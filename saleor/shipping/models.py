@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 from itertools import groupby
 from operator import itemgetter
+from decimal import Decimal
 
 from django.conf import settings
 from django.db import models
@@ -8,7 +9,7 @@ from django.db.models import Q
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import pgettext_lazy
 from django_prices.models import PriceField
-from prices import PriceRange
+from prices import PriceRange, Price
 from django_countries import countries
 
 
@@ -96,7 +97,10 @@ class ShippingMethodCountry(models.Model):
         return '%s %s' % (self.shipping_method, self.get_country_code_display())
 
     def get_total(self):
-        return self.price
+        #return self.price
+        # add fixed vat
+        price = Price(self.price.net, self.price.net * Decimal(1.19), self.price.currency)
+        return price
 
 
 class ShippingCountryQueryset(models.QuerySet):

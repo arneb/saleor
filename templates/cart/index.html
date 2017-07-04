@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load gross from prices_i18n %}
+{% load gross net tax from prices_i18n %}
 {% load i18n %}
 {% load staticfiles %}
 {% load render_bundle from webpack_loader %}
@@ -23,32 +23,35 @@
   {% if cart_lines %}
     <div class="table__header hidden-sm-down">
       <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-5">
           <small>{% trans "Product" context "Cart table header" %}</small>
         </div>
         <div class="col-md-3">
           <small>{% trans "Quantity" context "Cart table header" %}</small>
         </div>
         <div class="col-md-2 text-right">
-          <small>{% trans "Price" context "Cart table header" %}</small>
+          <small>{% trans "Price (net)" context "Cart table header" %}</small>
+        </div>
+        <div class="col-md-2 text-right">
+          <small>{% trans "Price (gross)" context "Cart table header" %}</small>
         </div>
       </div>
     </div>
     {% for line in cart_lines %}
       <div class="cart__line{% if forloop.last %} last{% endif %} table__row">
         <div class="row">
-          <div class="col-7 cart__line__product">
+          <div class="col-5 cart__line__product">
             <a class="link--clean" href="{{ line.variant.get_absolute_url }}">
-              <img src="{% get_thumbnail line.variant.product.images.first.image method="crop" size="60x60" %}" 
-                   srcset="{% get_thumbnail line.variant.product.images.first.image method="crop" size="60x60" %} 1x, {% get_thumbnail line.variant.product.images.first.image method="crop" size="120x120" %} 2x" 
+              <img src="{% get_thumbnail line.variant.product.images.first.image method="crop" size="60x60" %}"
+                   srcset="{% get_thumbnail line.variant.product.images.first.image method="crop" size="60x60" %} 1x, {% get_thumbnail line.variant.product.images.first.image method="crop" size="120x120" %} 2x"
                    alt="">
               <p>{{ line.variant.product }}
                 <br><small>{{ line.variant }}</small></p>
             </a>
           </div>
-          <div class="col-5">
+          <div class="col-7">
             <div class="row">
-              <div class="cart__line__quantity col-md-7 col-12">
+              <div class="cart__line__quantity col-md-6 col-12">
                 <form role="form" action="{% url "cart:update-line" variant_id=line.variant.pk %}" method="post" class="form-cart">
                   <div class="{% if form.quantity.errors %} has-error{% endif %}" tabindex="-1">
                     {{ line.form.quantity }}
@@ -60,7 +63,10 @@
                 </span>
                 <small class="cart__line__quantity-error text-danger"></small>
               </div>
-              <div class="cart-item-price col-md-5 col-12" data-product-id="{{ line.variant.pk }}">
+              <div class="cart-item-price col-md-3 col-12" data-product-id="net-{{ line.variant.pk }}">
+                <p class="text-right">{% net line.get_total html=True %}</p>
+              </div>
+              <div class="cart-item-price col-md-3 col-12" data-product-id="{{ line.variant.pk }}">
                 <p class="text-right">{% gross line.get_total html=True %}</p>
               </div>
             </div>

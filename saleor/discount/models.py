@@ -314,4 +314,5 @@ def calculate_discounted_price(product, price, discounts, **kwargs):
             get_product_discounts(product, discounts, **kwargs))
         if discounts:
             price = min(price | discount for discount in discounts)
+    price = Price(price.net, price.net * Decimal(1.19), price.currency)
     return price

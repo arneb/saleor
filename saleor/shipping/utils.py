@@ -1,5 +1,5 @@
-from prices import PriceRange
-
+from decimal import Decimal
+from prices import Price, PriceRange
 from .models import ShippingMethodCountry
 
 
@@ -10,6 +10,9 @@ def get_shipment_options(country_code):
     if not shipping_methods.exists():
         shipping_methods = shipping_methods_qs.filter(country_code='')
     if shipping_methods:
-        shipping_methods = shipping_methods.values_list('price', flat=True)
+        shipping_methods = [
+            Price(p.net, p.net * Decimal(1.19), p.currency)
+            for p in shipping_methods.values_list('price', flat=True)
+        ]
         return PriceRange(
             min_price=min(shipping_methods), max_price=max(shipping_methods))

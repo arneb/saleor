@@ -266,6 +266,10 @@ class DeliveryGroup(models.Model, ItemSet):
         return super(DeliveryGroup, self).__iter__()
 
     @property
+    def shipping_price_with_vat(self):
+        return Price(self.shipping_price.net, self.shipping_price.net * Decimal(1.19), self.shipping_price.currency)
+
+    @property
     def shipping_required(self):
         return self.shipping_method_name is not None
 

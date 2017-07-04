@@ -1,8 +1,9 @@
 {% load i18n %}
-{% load gross from prices_i18n %}
+{% load gross tax from prices_i18n %}
 
 <span>
     <span>
-        {% if price_range.min_price != price_range.max_price %}{% trans "from" context "product price range" %} {% endif %}{% gross price_range.min_price html=True %}
+        {% if method == 'gross' %}{% if price_range.min_price != price_range.max_price %}{% trans "from" context "product price range" %} {% endif %}{% gross price_range.min_price html=True %}{% endif %}
+        {% if method == 'tax' %}{% if price_range.min_price != price_range.max_price %}{% trans "from" context "product price range" %} {% endif %}{% tax price_range.min_price html=True %}{% endif %}
     </span>
 </span>

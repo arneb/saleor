@@ -1,6 +1,6 @@
 {% load i18n %}
-{% load price_range from price_ranges %}
-{% load gross from prices_i18n %}
+{% load price_range price_range_tax from price_ranges %}
+{% load gross net tax from prices_i18n %}
 
 {% if shipping_required %}
   <div class="table__row">
@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div class="last table__row cart__delivery-info">
+  <div class="table__row cart__delivery-info">
     <div class="row">
       <div class="col-7 cart__total__subtotal deliveryform" data-csrf="{{ csrf_token }}">
         <div class="row">
@@ -48,6 +48,29 @@
             </p>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="last table__row">
+    <div class="row">
+      <div class="col-8 cart__total__subtotal">
+        <h3>{% trans "Tax included" context "Order subtotal" %}</h3>
+      </div>
+      <div class="col-4">
+        <h3 class="text-right cart-subtotal"
+           data-value="{% tax cart_total %}"
+           {% if local_cart_total %}data-value-local="{% tax local_cart_total %}"{% endif %}>
+          {% spaceless %}
+            {% price_range_tax total_with_shipping %}
+            {% if local_cart_total %}
+              <br>
+              <small>
+                &asymp;
+                {% tax local_cart_total html=True %}
+              </small>
+            {% endif %}
+          {% endspaceless %}
+        </h3>
       </div>
     </div>
   </div>
